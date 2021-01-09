@@ -74,6 +74,7 @@ reg [5:0] b_o;
 reg hs_o;
 reg vs_o;
 
+
 wire [COLOR_DEPTH*3-1:0] sd_mux = bypass ? {r_in, g_in, b_in} : sd_out;
 
 always @(*) begin
@@ -167,8 +168,12 @@ reg  [HSCNT_WIDTH:0] hs_rise;
 reg  [HSCNT_WIDTH:0] synccnt;
 
 // Input pixel clock, aligned with input sync:
+
+reg [2:0] ce_divider_in;
+reg [2:0] ce_divider_out;
+
 reg [2:0] i_div;
-wire ce_x1 = (i_div == ce_divider);
+wire ce_x1 = (i_div == ce_divider_in);
 
 always @(posedge clk_sys) begin
 	reg hsD, vsD;
@@ -187,6 +192,11 @@ always @(posedge clk_sys) begin
 	synccnt <= synccnt + 1'd1;
 	hsD <= hs_in;
 	if(hsD && !hs_in) begin
+		// At hsync latch the ce_divider counter limit for the input clock
+		// and pass the previous input clock limit to the output stage.
+		// This should give correct output if the pixel clock changes mid-screen.
+		ce_divider_out <= ce_divider_in;
+		ce_divider_in <= ce_divider;
 		hs_max <= {1'b0,synccnt[HSCNT_WIDTH:1]};
 		hcnt <= 0;
 		synccnt <= 0;
@@ -214,7 +224,7 @@ reg        hs_sd;
 
 // Output pixel clock, aligned with output sync:
 reg [2:0] sd_i_div;
-wire ce_x2 = (sd_i_div == ce_divider) | (sd_i_div == {1'b0,ce_divider[2:1]});
+wire ce_x2 = (sd_i_div == ce_divider_out) | (sd_i_div == {1'b0,ce_divider_out[2:1]});
 
 // timing generation runs 32 MHz (twice the input signal analysis speed)
 always @(posedge clk_sys) begin
