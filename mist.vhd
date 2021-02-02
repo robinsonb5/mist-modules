@@ -78,6 +78,7 @@ generic (
 	OSD_X_OFFSET : std_logic_vector(9 downto 0) := (others => '0');
 	OSD_Y_OFFSET : std_logic_vector(9 downto 0) := (others => '0');
 	SD_HCNT_WIDTH: integer := 9;
+	SD_SCNT_WIDTH: integer := 12;
 	COLOR_DEPTH  : integer := 6;
 	OSD_AUTO_CE  : boolean := true;
 	SYNC_AND     : boolean := false
@@ -90,7 +91,7 @@ port (
 	SPI_DI      : in std_logic;
 
 	scanlines   : in std_logic_vector(1 downto 0);
-	ce_divider  : in std_logic := '0';
+	ce_divider  : in std_logic_vector(2 downto 0) := "000";
 	scandoubler_disable : in std_logic;
 	ypbpr       : in std_logic;
 	rotate      : in std_logic_vector(1 downto 0);

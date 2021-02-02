@@ -36,7 +36,6 @@ set_global_assignment -name FLEX10K_DEVICE_IO_STANDARD LVTTL/LVCMOS
 set_global_assignment -name ON_CHIP_BITSTREAM_DECOMPRESSION ON
 set_global_assignment -name GENERATE_RBF_FILE ON
 
-set_global_assignment -name PRE_FLOW_SCRIPT_FILE "quartus_sh:build_id_verilog.tcl"
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name ENABLE_DRC_SETTINGS OFF
 set_global_assignment -name ENABLE_CLOCK_LATENCY ON
