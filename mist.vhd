@@ -68,7 +68,10 @@ port (
 	mouse_z           : out signed(3 downto 0);
 	mouse_flags       : out std_logic_vector(7 downto 0); -- YOvfl, XOvfl, dy8, dx8, 1, mbtn, rbtn, lbtn
 	mouse_strobe      : out std_logic;
-	mouse_idx         : out std_logic
+	mouse_idx         : out std_logic;
+
+	serial_data			: in std_logic_vector(7 downto 0);
+	serial_strobe		: in std_logic
 );
 end component user_io;
 
