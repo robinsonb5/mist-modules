@@ -50,11 +50,11 @@ set_global_assignment -name OPTIMIZE_TIMING "NORMAL COMPILATION"
 set_global_assignment -name FINAL_PLACEMENT_OPTIMIZATION ALWAYS
 set_global_assignment -name AUTO_GLOBAL_MEMORY_CONTROLS ON
 set_global_assignment -name AUTO_PACKED_REGISTERS "MINIMIZE AREA"
-set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
-set_global_assignment -name ALLOW_ANY_ROM_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION OFF
+set_global_assignment -name ALLOW_ANY_ROM_SIZE_FOR_RECOGNITION OFF
 set_global_assignment -name ADD_PASS_THROUGH_LOGIC_TO_INFERRED_RAMS OFF
-set_global_assignment -name IGNORE_CARRY_BUFFERS ON
-set_global_assignment -name IGNORE_CASCADE_BUFFERS ON
+set_global_assignment -name IGNORE_CARRY_BUFFERS OFF
+set_global_assignment -name IGNORE_CASCADE_BUFFERS OFF
 set_global_assignment -name AUTO_GLOBAL_CLOCK ON
 set_global_assignment -name AUTO_RAM_RECOGNITION ON
 set_global_assignment -name AUTO_SHIFT_REGISTER_RECOGNITION AUTO
