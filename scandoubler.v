@@ -68,12 +68,11 @@ reg [5:0] r;
 reg [5:0] g;
 reg [5:0] b;
 
-reg [5:0] r_o;
-reg [5:0] g_o;
-reg [5:0] b_o;
+wire [5:0] r_o;
+wire [5:0] g_o;
+wire [5:0] b_o;
 reg hs_o;
 reg vs_o;
-
 
 wire [COLOR_DEPTH*3-1:0] sd_mux = bypass ? {r_in, g_in, b_in} : sd_out;
 
@@ -97,6 +96,22 @@ always @(*) begin
 	end
 end
 
+
+reg [12:0] r_mul;
+reg [12:0] g_mul;
+reg [12:0] b_mul;
+
+wire scanline_bypass = (!scanline) | (!(|scanlines)) | bypass;
+
+// More subtle variant of the scanlines effect.
+// 0 00 -> 1000000 0x40	 -  bypass / inert mode
+// 1 01 -> 0111010 0x3a  -  25%
+// 2 10 -> 0101110 0x2e  -  50%
+// 3 11 -> 0011010 0x1a  -  75%
+
+wire [6:0] scanline_coeff = scanline_bypass ?
+				7'b1000000 : {~(&scanlines),scanlines[0],1'b1,~scanlines[0],2'b10};
+
 always @(posedge clk_sys) begin
 	if(ce_x2) begin
 		hs_o <= hs_sd;
@@ -108,34 +123,16 @@ always @(posedge clk_sys) begin
 		// toggle scanlines at begin of every hsync
 		if(hs_o && !hs_sd) scanline <= !scanline;
 
-		// if no scanlines, not a scanline, or we're bypassing the scandoubler
-		if(!scanline || !scanlines || bypass) begin
-			r_o <= r;
-			g_o <= g;
-			b_o <= b;
-		end else begin
-			case(scanlines)
-				1: begin // reduce 25% = 1/2 + 1/4
-					r_o <= {1'b0, r[5:1]} + {2'b00, r[5:2] };
-					g_o <= {1'b0, g[5:1]} + {2'b00, g[5:2] };
-					b_o <= {1'b0, b[5:1]} + {2'b00, b[5:2] };
-				end
-
-				2: begin // reduce 50% = 1/2
-					r_o <= {1'b0, r[5:1]};
-					g_o <= {1'b0, g[5:1]};
-					b_o <= {1'b0, b[5:1]};
-				end
-
-				3: begin // reduce 75% = 1/4
-					r_o <= {2'b00, r[5:2]};
-					g_o <= {2'b00, g[5:2]};
-					b_o <= {2'b00, b[5:2]};
-				end
-			endcase
-		end
+		r_mul<=r*scanline_coeff;
+		g_mul<=g*scanline_coeff;
+		b_mul<=b*scanline_coeff;
 	end
 end
+
+assign r_o = r_mul[11:6];
+assign g_o = g_mul[11:6];
+assign b_o = b_mul[11:6];
+
 
 // Output multiplexing
 
