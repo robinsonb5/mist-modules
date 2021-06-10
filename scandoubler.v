@@ -20,9 +20,9 @@
 
 // AMR - generates and output a pixel clock with a reliable phase relationship with
 // with the scandoubled hsync pulse.  Allows the incoming data to be sampled more
-// sparsely, reducing block RAM usage.  ce_x1/x2 are replaced with a cd_divider
+// sparsely, reducing block RAM usage.  ce_x1/x2 are replaced with a ce_divider
 // which is the largest value the counter will reach before resetting - so 3'111 to
-// divide clk_sys by, 3'011 to divide by 4, 3'101 to divide by six.
+// divide clk_sys by 8, 3'011 to divide by 4, 3'101 to divide by six.
 
 // Also now has a bypass mode, in which the incoming data will be scaled to the output
 // width but otherwise unmodified.  Simplifies the rest of the video chain.
@@ -136,9 +136,9 @@ assign b_o = b_mul[11:6];
 
 // Output multiplexing
 
-assign r_out = bypass ? r_in : r_o;
-assign g_out = bypass ? g_in : g_o;
-assign b_out = bypass ? b_in : b_o;
+assign r_out = bypass ? r : r_o;
+assign g_out = bypass ? g : g_o;
+assign b_out = bypass ? b : b_o;
 assign hs_out = bypass ? hs_in : hs_o;
 assign vs_out = bypass ? vs_in : vs_o;
 
